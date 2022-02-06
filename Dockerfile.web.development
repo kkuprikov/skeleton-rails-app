@@ -1,0 +1,53 @@
+# Use the barebones version of Ruby
+FROM ruby:3.1.0-slim
+
+# Optionally set a maintainer name to let people know who made this image.
+LABEL maintainer="Lasse Laursen <lasse@decideact.net>"
+
+# ENV
+ENV RUBYOPT=--yjit
+
+ARG app_revision
+ENV APP_REVISION=$app_revision
+
+# Fix deb source files
+RUN sed -i 's/http:/https:/g' /etc/apt/sources.list
+
+# Install dependencies:
+# - build-essential: To ensure certain gems can be compiled
+RUN apt-get update && apt-get -u dist-upgrade -qq -y && apt-get install -qq -y shared-mime-info cmake libsodium-dev git curl libpq-dev build-essential pkg-config --fix-missing --no-install-recommends && apt-get clean && rm -Rf /var/lib/apt/lists/*
+
+# Create a dedicated user for running the application
+RUN adduser --disabled-login --gecos "" appuser
+
+# Set the user for RUN, CMD or ENTRYPOINT calls from now on
+# Note that this doesn't apply to COPY or ADD, which use a --chown argument instead
+USER appuser
+
+# Configure the main working directory. This is the base
+# directory used in any further RUN, COPY, and ENTRYPOINT
+# commands.
+WORKDIR /home/appuser
+
+# Copy the Gemfile as well as the Gemfile.lock and install
+# the RubyGems. This is a separate step so the dependencies
+# will be cached unless changes to one of those two files
+# are made.
+COPY --chown=appuser Gemfile Gemfile.lock ./
+RUN gem install bundler
+RUN bundle config set without 'production'
+RUN bundle install --jobs 20 --retry 5
+
+# Copy the main application.
+COPY --chown=appuser . ./
+
+# Expose port 3000 to the Docker host, so we can access it
+# from the outside.
+EXPOSE 3000
+
+# Configure an entry point, so we don't need to specify
+# "bundle exec" for each of our commands.
+ENTRYPOINT ["bundle", "exec"]
+
+# The main command to run when the container starts.
+CMD ["puma", "-w", "5", "--pidfile", "tmp/puma.pid", "-S", "tmp/status.txt", "--preload"]
