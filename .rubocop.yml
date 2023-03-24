@@ -1,0 +1,101 @@
+AllCops:
+  EnabledByDefault: true
+Style/Copyright:
+  Enabled: false
+Style/MethodCallWithArgsParentheses:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Style/DocumentationMethod:
+  Enabled: false
+Layout/LineLength:
+  Enabled: false
+RSpec/EmptyExampleGroup:
+  Enabled: false
+Naming/MethodParameterName:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Naming/PredicateName:
+  Enabled: false
+Metrics/BlockNesting:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Style/MissingElse:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/InstanceVariable:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/RepeatedDescription:
+  Enabled: false
+RSpec/Pending:
+  Enabled: false
+Lint/ConstantResolution:
+  Enabled: false
+Rails/BulkChangeTable:
+  Enabled: false
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+Rails/ReversibleMigration:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Rails/SkipsModelValidations:
+  Enabled: false
+Lint/EmptyBlock:
+  Enabled: false
+Performance/ArraySemiInfiniteRangeSlice:
+  Enabled: false
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: false
+Bundler/GemVersion:
+  Enabled: false
+Naming/InclusiveLanguage:
+  Enabled: false
+Lint/MissingSuper:
+  Enabled: false
+RSpec/FactoryBot/SyntaxMethods:
+  Enabled: false
+Rails/SchemaComment:
+  Enabled: false
+Rails/ReversibleMigrationMethodDefinition:
+  Enabled: false
+Rails/DefaultScope:
+  Enabled: false
+Style/TopLevelMethodDefinition:
+  Enabled: false
+Style/ArrayIntersect:
+  Enabled: false
+RSpec/PendingWithoutReason:
+  Enabled: false
+Lint/UselessRescue:
+  Enabled: false
+
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - staging
+
+require:
+  - rubocop-performance
+  - rubocop-rspec
+  - rubocop-rails
+  - rubocop-faker
