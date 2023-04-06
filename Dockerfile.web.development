@@ -1,5 +1,5 @@
 # Use the barebones version of Ruby
-FROM ruby:3.2.1-slim
+FROM ruby:3.2.2-slim
 
 # Optionally set a maintainer name to let people know who made this image.
 LABEL maintainer="Lasse Laursen <lasse@decideact.net>"
