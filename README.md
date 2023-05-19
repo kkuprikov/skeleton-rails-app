@@ -49,7 +49,7 @@ Design the model(s) (migrations, models and RSpec tests) for the following scena
 
 A school has students. Each student is identified by a unique non sequential ID. Each student has a first name, a last name and an optional middle name. Each student has a unique and valid email address. The email address `foo@bar.com` and `FOO@bar.com` is considered to be the same email address. You can store the email address in any format you prefer.
 
-The school offers courses. Each course is identified by a unique non sequential ID. Each course has a name and an optional description. Each course has a unique ID which consists of 3 capital letters, a dash (-) and 5 digits. Eg. “TRB-38491”
+The school offers courses. Each course is identified by a unique non sequential ID. Each course has a name and an optional description. Each course has a unique reference code which consists of 3 capital letters, a dash (-) and 5 digits. Eg. “TRB-38491”
 
 Each student can attend any course, but only once! Each student will have a grade between 0 and 100 (integer) for the attended course. A course passed is any course that the student attend with a grade greater than or equal to 80.
 
