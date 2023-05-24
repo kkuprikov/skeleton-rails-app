@@ -8,7 +8,7 @@ class CreateCoursesStudentsJoinTable < ActiveRecord::Migration[7.0]
       t.integer :grade, null: false
     end
 
-    add_index :courses_students, :course_id
+    add_index :courses_students, %i[course_id student_id], unique: true
     add_index :courses_students, :student_id
   end
 end

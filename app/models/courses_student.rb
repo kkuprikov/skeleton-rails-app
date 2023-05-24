@@ -7,6 +7,8 @@ class CoursesStudent < ApplicationRecord
   belongs_to :course
   belongs_to :student
 
+  validates :grade, numericality: { in: 0..100 }
+
   # By using scopes here we avoid some duplicating in other models
   scope :passed, -> { where('courses_students.grade >= ?', PASS_THRESHOLD) }
   scope :failed, -> { where('courses_students.grade < ?', PASS_THRESHOLD) }

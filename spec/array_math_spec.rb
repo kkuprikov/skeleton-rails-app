@@ -8,7 +8,9 @@ INPUTS_TO_RESULTS = {
   [1, '1'] => 0,
   [1, 2, 3, 4, 5, 6, 7, 8, 9] => 5,
   [nil] => 0,
-  [1.5, {}] => 0
+  [1.5, {}] => 0,
+  'test' => 0,
+  [] => 0
 }.freeze
 
 RSpec.describe ArrayMath do

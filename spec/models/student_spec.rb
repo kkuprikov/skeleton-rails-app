@@ -24,7 +24,7 @@ RSpec.describe Student do
   end
 
   it 'is invalid with existing email' do
-    described_class.create!(**student.attributes)
+    described_class.create!(**student.attributes.merge(email: 'TOM@test.com'))
     expect(student).not_to be_valid
     expect(student.errors.messages).to include(email: ['has already been taken'])
   end
