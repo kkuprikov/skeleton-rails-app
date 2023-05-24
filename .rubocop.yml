@@ -70,7 +70,7 @@ Naming/InclusiveLanguage:
   Enabled: false
 Lint/MissingSuper:
   Enabled: false
-RSpec/FactoryBot/SyntaxMethods:
+FactoryBot/SyntaxMethods:
   Enabled: false
 Rails/SchemaComment:
   Enabled: false
@@ -99,3 +99,4 @@ require:
   - rubocop-rspec
   - rubocop-rails
   - rubocop-faker
+  - rubocop-factory_bot

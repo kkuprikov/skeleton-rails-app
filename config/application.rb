@@ -26,6 +26,8 @@ module SkeletonRailsApp
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
 
+    config.autoload_paths << "#{root}/app/interactors"
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -38,5 +40,7 @@ module SkeletonRailsApp
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.pass_threshold = 80
   end
 end
