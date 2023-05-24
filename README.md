@@ -1,126 +1,34 @@
 # Coding test
 
-## About the test
+## Architecture choices
 
-This coding test is used as part of our evaluation for new backend developers. What is important is that you not only code, but also comment on your design choices. It is used to get an insight into your way of thinking and structuring your development and thought process.
+### Test 1
 
-The code quality should be what you would consider ready to be deployed to an enterprise production system. If there are parts of your solution that, in your opinion, could have alternative solutions or codesmell, then it would be good that you pinpoint those areas and describe why you feel that these areas could be improved.
+As many students may relate to different courses, it's essential to use `has_many` association here. The `has_many through` is used to store the grade in a join table's field.
 
-## Tech and getting started
+Generating UUID as a primary key for students and courses is implemented using `pgcrypto` extension. Unique indexes are used for students' `email` and courses' `reference_code` fields. Also, for the join table a unique compond index on `%i[course_id student_id]` is utilized, along with `:student_id` index. There's no need to use two compound indexes, as explained [here](https://pawelurbanek.com/rails-postgres-join-indexes).
 
-We currently use **Ruby on Rails 7.0.4.3** with **Ruby MRI 3.2.2**. As a backend database we use **PostgreSQL 13.1**. For testing we use **RSpec**. We expect that the application will be using the same versions and technologies. Furthermore we use **Rubocop** to improve our code quality. For development and production we use Docker images.
+There's no underlying difference between `varchar` and `text` in Postgres, however, I'm used to mark potentially bigger fields as text. Thus, course's description has a `text` type.
 
-A ready to use Docker setup of Ruby on Rails 7.0.4.3 with PostgreSQL 13.1 is available. This can be cloned from the public repo:
+As for tests, I covered possible scenarios for blank mandatory fields, wrongly formatted or existing reference code and existing email (coerced to lower case).
 
-`https://github.com/DecideAct/skeleton-rails-app`
+### Test 2
 
-To start up a ready to use skeleton app simply clone the public repo and run:
+I was inspired with simplicity that `interactor` gem provides to extract a business logic for this task to separate classes. An alternative could be using `dry-transaction` and/or `dry-monads` to reflect the flow.
 
+I choose a pessimistic lock approach, as we're dealing with hundreds of simultaneous transactions. They should perform fast enough, however, a deadlock may occur if two transfers take place at the same time:
 ```
-docker-compose run web rake db:create
-docker-compose run web rails c
-```
-
-and
-
-```
-docker-compose run web ANY_COMMAND_YOU_WISH_TO_RUN_IN_THE_DOCKER_CONTAINER
-```
-
-Example:
-
-```
-docker-compose run web bundle exec rspec spec
+# account1 -> account2
+account1.lock!
+# waiting for account2 to be released
+# account2 -> account1
+account2.lock!
+# waiting for account1
 ```
 
-Since our backend system is only used in API mode it is not necessary to use any time on any frontend functionality. All testing should be done via RSpec and/or via the rails console.
+In that case, one of the transactions will fail.
+Also, it's probably a performance improvement to cache total balance somewhere if it's often asked for. This value should then only be updated on `.deposit` and `.withdraw` operations, relieving the database from performing `sum()` on large dataset.
 
-You can use any gem and any extensions to PostgreSQL, as long as you comment on why you have decided to use this certain gem or extension in your application.
+### Test #
 
-Please read the tests through thoroughly since each line contains important information and hints to the task. If you have any questions in regard to the test then don’t hesitate to contact me: `lasse@decideact.net`
-
-Each test is an individual test. The tests are not related and can be solved in any order.
-
----
-
-## Test 1
-
-Design the model(s) (migrations, models and RSpec tests) for the following scenario:
-
-A school has students. Each student is identified by a unique non sequential ID. Each student has a first name, a last name and an optional middle name. Each student has a unique and valid email address. The email address `foo@bar.com` and `FOO@bar.com` is considered to be the same email address. You can store the email address in any format you prefer.
-
-The school offers courses. Each course is identified by a unique non sequential ID. Each course has a name and an optional description. Each course has a unique reference code which consists of 3 capital letters, a dash (-) and 5 digits. Eg. “TRB-38491”
-
-Each student can attend any course, but only once! Each student will have a grade between 0 and 100 (integer) for the attended course. A course passed is any course that the student attend with a grade greater than or equal to 80.
-
-The student model should have the following method calls implemented:
-
-```
-passed_courses  :  All the courses that the student passed
-failed_courses  :  All the courses that the student failed
-average_grade   :  The average grade of all the courses that the student attended
-```
-
-The courses model should have the following method calls implemented:
-
-```
-students_that_passed  :  All students that passed the course
-students_that_failed  :  All students that failed the course
-```
-
-- Explain the various data types used in PostgreSQL and why you have decided to use the specific types
-- Explain how and why indexes are used
-- Explain why and how you decide to use RSpec tests to cover the model validations
-
----
-
-## Test 2
-
-We have a busy bank with 1000s of transactions per second. Transactions are deposits into accounts, withdrawals from accounts and movements of amounts between different accounts.
-
-Design a simple model of a bank account. The account has a balance of any valid amount in Euros. The balance can be positive or negative (assume that the balance is always in the range of -2000000..2000000) and that the amount can be any euro and cent amount. It is essential that the amounts in the accounts are precise!
-
-Create business logic for the following:
-
-- Return the sum of the balance for all the accounts
-- Transfer a given amount between two accounts - the sender and recipient accounts must not be the same
-- Add a given amount to an account (a deposit in a bank of money into an account)
-- Deduct a given amount from an account (a withdrawal in a bank of money from an account)
-
-Again you are allowed to use any gem that you find useful, but please explain why you decided to use the gem.
-
-Our system uses this gem extensively:
-
-`https://github.com/collectiveidea/interactor`
-
-It is not required, however I would recommend looking at this gem.
-
----
-
-## Test 3
-
-A junior developer made the following function for returning the average sum of elements of an array. The input data is from various sources; **trusted** and **untrusted**. It is essential that the function will not cause application errors no matter what the provided input is.
-
-Write RSpec tests for the following code and come with improvements to the code.
-
-```
-def calculate_average(a)
-  a.sum / a.length
-end
-```
-
-Example:
-
-```
-3.2.1 :001 > calculate_average([1,2,3])
- => 2
-
-3.2.1 :002 > calculate_average([1,2,3,4,5,6,7,8,9])
- => 5
-
-3.2.1 :003 > calculate_average([-1,-2,3])
- => 0
-
-3.2.1 :010 > calculate_average([0])
- => 0
-```
+The logic resides in `lib/array_math.rb` module. We need to ensure that argument for the function is a non-empty `Array` with all elements being numeric.
