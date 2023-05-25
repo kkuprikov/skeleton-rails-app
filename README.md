@@ -29,6 +29,6 @@ account2.lock!
 In that case, one of the transactions will fail.
 Also, it's probably a performance improvement to cache total balance somewhere if it's often asked for. This value should then only be updated on `.deposit` and `.withdraw` operations, relieving the database from performing `sum()` on large dataset.
 
-### Test #
+### Test 3
 
 The logic resides in `lib/array_math.rb` module. We need to ensure that argument for the function is a non-empty `Array` with all elements being numeric.
