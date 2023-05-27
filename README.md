@@ -4,7 +4,7 @@
 
 ### Test 1
 
-As many students may relate to different courses, it's essential to use `has_many` association here. The `has_many through` is used to store the grade in a join table's field.
+As many students may relate to different courses, it's essential to use `has_and_belongs_to_many` association type here. The `has_many :through` is used to store the grade in a join table's field.
 
 Generating UUID as a primary key for students and courses is implemented using `pgcrypto` extension. Unique indexes are used for students' `email` and courses' `reference_code` fields. Also, for the join table a unique compond index on `%i[course_id student_id]` is utilized, along with `:student_id` index. There's no need to use two compound indexes, as explained [here](https://pawelurbanek.com/rails-postgres-join-indexes).
 
@@ -14,10 +14,11 @@ As for tests, I covered possible scenarios for blank mandatory fields, wrongly f
 
 ### Test 2
 
-I was inspired with simplicity that `interactor` gem provides to extract a business logic for this task to separate classes. An alternative could be using `dry-transaction` and/or `dry-monads` to reflect the flow.
+I was inspired by simplicity that `interactor` gem provides to extract a business logic for this task to separate classes. An alternative could be using `dry-transaction` and/or `dry-monads` to reflect the flow.
 
-I choose a pessimistic lock approach, as we're dealing with hundreds of simultaneous transactions. They should perform fast enough, however, a deadlock may occur if two transfers take place at the same time:
-```
+I choose a pessimistic lock approach, as we're potentially dealing with hundreds of simultaneous transactions. They should perform fast enough, however, a deadlock may occur if two transfers take place at the same time:
+
+```ruby
 # account1 -> account2
 account1.lock!
 # waiting for account2 to be released
