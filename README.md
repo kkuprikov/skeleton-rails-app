@@ -6,7 +6,7 @@
 
 As many students may relate to different courses, it's essential to use `has_and_belongs_to_many` association type here. The `has_many :through` is used to store the grade in a join table's field.
 
-Generating UUID as a primary key for students and courses is implemented using `pgcrypto` extension. Unique indexes are used for students' `email` and courses' `reference_code` fields. Also, for the join table a unique compond index on `%i[course_id student_id]` is utilized, along with `:student_id` index. There's no need to use two compound indexes, as explained [here](https://pawelurbanek.com/rails-postgres-join-indexes).
+Generating UUID as a primary key for students and courses is implemented using `pgcrypto` extension. Unique indexes are used for students' `email` and courses' `reference_code` fields. Also, for the join table a unique compound index on `%i[course_id student_id]` is utilized, along with `:student_id` index. There's no need to use two compound indexes, as explained [here](https://pawelurbanek.com/rails-postgres-join-indexes).
 
 There's no underlying difference between `varchar` and `text` in Postgres, however, I'm used to mark potentially bigger fields as text. Thus, course's description has a `text` type.
 
