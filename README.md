@@ -16,7 +16,7 @@ As for tests, I covered possible scenarios for blank mandatory fields, wrongly f
 
 I was inspired by simplicity that `interactor` gem provides to extract a business logic for this task to separate classes. An alternative could be using `dry-transaction` and/or `dry-monads` to reflect the flow.
 
-I choose a pessimistic lock approach, as we're potentially dealing with hundreds of simultaneous transactions. They should perform fast enough, however, a deadlock may occur if two transfers take place at the same time:
+I've chosen a pessimistic lock approach, as we're potentially dealing with hundreds of simultaneous transactions. They should perform fast enough, however, a deadlock may occur if two transfers take place at the same time:
 
 ```ruby
 # account1 -> account2
